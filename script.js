@@ -20,10 +20,26 @@ let bestScore = 0; // TODO: Adicionar Lógica.
 //     message.innerHTML = 'Em Jogo'
 // });
 
-document.addEventListener('keydown', (event) => {
-    if (event.key == "Enter"){
-        state = State.play;
-        console.log("No estado" + state);
-        message.innerHTML = 'Voa, Voa, Voa!';
+function startGame() {
+    document.addEventListener('keydown', (event) => {
+        if (event.key == "Enter") {
+            state = State.play;
+            console.log("No estado" + state);
+            message.innerHTML = 'Voa, Voa, Voa!';
+        }
+    })
+    
+    function resetPositionBird() {
+        bird.style.top = '40vh';
+        bird.style.left = '30vw';
     }
-});
+
+    function resetScore() {
+        score = 0;
+    }
+
+    resetPositionBird();
+    resetScore();
+};
+
+startGame();
