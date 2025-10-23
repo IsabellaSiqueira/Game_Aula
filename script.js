@@ -82,7 +82,21 @@ function loop() {
     update();
     render();
     requestAnimationFrame(loop);
+    spawnPipes();
 };
+
+function spawnPipes(){
+    const positionY = -20;
+    const positionX = 100;
+
+    const box = document.createElement('div');
+    const sprite = document.createElement('img');
+    sprite.className = 'sprite-pipe';
+    sprite.style.left = '20vw';
+    box.appendChild(sprite);
+
+    game.appendChild(box);
+}
 
 document.addEventListener('keydown', (event) => {
     if (state === State.start || state === State.end) {
