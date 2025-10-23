@@ -68,4 +68,13 @@ function game() {
     }
 };
 
-startGame();
+function endGame() {
+    function lostPositionBird() {
+        bird.style.transform = 'scaleY(-1)';
+    };
+
+    lostPositionBird();
+};
+
+
+endGame();
