@@ -1,4 +1,4 @@
-// const game = document.querySelector('.game');
+const game = document.querySelector('.game');
 const bird = document.querySelector('.bird');
 const hudScore = document.querySelector('.score');
 const message = document.querySelector('.message');
@@ -16,78 +16,89 @@ let score = 0;
 let bestScore = 0; // TODO: Adicionar Lógica.
 
 let frames = 0;
+const topBound = 0;
+const bottomBound = window.innerHeight;
 
 const gravity = 0.5;
 const flap = -8;
 let velocityY = 0;
 
-// btnStart.addEventListener('click', () => {
-//     state = State.play;
-//     message.innerHTML = 'Em Jogo'
-// });
+let velocityX = -1;
+
+function resetPositionBird() {
+    bird.style.top = '40vh';
+    bird.style.left = '30vw';
+    bird.style.transform = 'none';
+}
+
+function resetGameVariables() {
+    score = 0;
+    frames = 0;
+    velocityY = 0;
+}
 
 function startGame() {
-    document.addEventListener('keydown', (event) => {
-        if (event.key == "Enter") {
-            state = State.play;
-            console.log("No estado" + state);
-            message.innerHTML = 'Voa, Voa, Voa!';
-        }
-    })
-
-    function resetPositionBird() {
-        bird.style.top = '40vh';
-        bird.style.left = '30vw';
-    }
-
-    function resetScore() {
-        score = 0;
-    }
-
-    function resetFrames() {
-        frames = 0;
-    }
-
-    resetFrames();
+    resetGameVariables();
     resetPositionBird();
-    resetScore();
-};
-
-function game() {
-    // state = State.play;
-
-    function loop() {
-        update();
-        render();
-        requestAnimationFrame(loop);
-    };
-
-    requestAnimationFrame(loop);
-
-    function update() {
-        if (state === State.play) {
-            frames++;
-            velocityY += gravity;
-            const box = bird.getBoundingClientRect();
-            const newY = box.top + velocityY;
-            bird.style.top = newY + 'px';
-        };
-    };
-
-    function render() {
-        if (state === State.play) {
-            message.innerHTML = 'Loop rodando em ' + frames;
-        }
-    }
-};
+}
 
 function endGame() {
-    function lostPositionBird() {
-        bird.style.transform = 'scaleY(-1)';
-    };
-
-    lostPositionBird();
+    state = State.end;
+    message.innerHTML = 'Game Over! Pressione Enter para reiniciar.';
+    bird.style.transform = 'scaleY(-1)';
 };
 
+function flapBird() {
+    velocityY = flap;
+};
 
-game();
+function update() {
+    if (state === State.play) {
+        // score++;
+        frames++;
+        velocityY += gravity;
+        const box = bird.getBoundingClientRect();
+        let newY = box.top + velocityY;
+
+        if (newY >= bottomBound - box.height) {
+            newY = bottomBound - box.height;
+            endGame();
+        } else if (newY <= topBound) {
+            newY = topBound;
+            velocityY = 0;
+        }
+
+        bird.style.top = newY + 'px';
+    };
+};
+
+function render() {
+    if (state === State.play) {
+        message.innerHTML = 'Loop rodando em: ' + frames;
+    }
+}
+
+function loop() {
+    update();
+    render();
+    requestAnimationFrame(loop);
+};
+
+document.addEventListener('keydown', (event) => {
+    if (state === State.start || state === State.end) {
+        if (event.key === "Enter") {
+            state = State.play;
+            startGame();
+            message.innerHTML = 'Voa, Voa, Voa!';
+            event.preventDefault();
+        }
+    } else if (state === State.play) {
+        if (event.key === " ") {
+            flapBird();
+            event.preventDefault();
+        }
+    }
+});
+
+startGame();
+requestAnimationFrame(loop);
