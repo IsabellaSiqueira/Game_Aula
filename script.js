@@ -15,7 +15,11 @@ let state = State.start;
 let score = 0;
 let bestScore = 0; // TODO: Adicionar Lógica.
 
-let frames = 0; // TODO: Verificar se necessita colocar no startGame.
+let frames = 0;
+
+const gravity = 0.5;
+const flap = -8;
+let velocityY = 0;
 
 // btnStart.addEventListener('click', () => {
 //     state = State.play;
@@ -40,6 +44,11 @@ function startGame() {
         score = 0;
     }
 
+    function resetFrames() {
+        frames = 0;
+    }
+
+    resetFrames();
     resetPositionBird();
     resetScore();
 };
@@ -58,12 +67,16 @@ function game() {
     function update() {
         if (state === State.play) {
             frames++;
+            velocityY += gravity;
+            const box = bird.getBoundingClientRect();
+            const newY = box.top + velocityY;
+            bird.style.top = newY + 'px';
         };
     };
 
     function render() {
         if (state === State.play) {
-            message.innerHTML = 'Loop rodando em' + frames;
+            message.innerHTML = 'Loop rodando em ' + frames;
         }
     }
 };
@@ -77,4 +90,4 @@ function endGame() {
 };
 
 
-endGame();
+game();
